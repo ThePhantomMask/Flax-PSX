@@ -164,8 +164,13 @@ public class PostProcessing : PostProcessEffect
         // Plug into main scene rendering
         MainRenderTask.Instance.AddCustomPostFx(this);
 
+        /*
         // Disable Scene Rendering on Main Task
         MainRenderTask.Instance.ActorsSource = ActorsSources.None;
+        */
+
+        MainRenderTask.Instance.ViewLayersMask = LayersMask.GetMask("UI");
+        _sceneRenderTask.ViewLayersMask = MainCamera.RenderLayersMask & ~LayersMask.GetMask("UI");
     }
 
     /// <summary>
@@ -203,6 +208,7 @@ public class PostProcessing : PostProcessEffect
         // Cleanup
         MainRenderTask.Instance.RemoveCustomPostFx(this);
         MainRenderTask.Instance.ActorsSource = ActorsSources.Scenes;
+        MainRenderTask.Instance.ViewLayersMask = LayersMask.Default;
 
         if (_sceneRenderTask != null)
         {
