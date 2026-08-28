@@ -55,7 +55,9 @@ public class PostProcessing : PostProcessEffect
 
     public Camera MainCamera;
     public ActorsSources ActorSources = ActorsSources.ScenesAndCustomActors;
-    
+
+    public LayersMask UILayer;
+
     [Space(10)]
     [Header("Colors", 12)]
     public bool UseDithering = false;
@@ -173,8 +175,8 @@ public class PostProcessing : PostProcessEffect
         MainRenderTask.Instance.ActorsSource = ActorsSources.Scenes;
 
         _mainRenderTaskLayer = MainRenderTask.Instance.ViewLayersMask;
-        MainRenderTask.Instance.ViewLayersMask = LayersMask.GetMask("UI");
-        _sceneRenderTask.ViewLayersMask = MainCamera.RenderLayersMask & ~LayersMask.GetMask("UI");
+        MainRenderTask.Instance.ViewLayersMask = UILayer;
+        _sceneRenderTask.ViewLayersMask = MainCamera.RenderLayersMask & ~UILayer;
     }
 
     /// <summary>
@@ -393,12 +395,17 @@ public class PostProcessing : PostProcessEffect
         // If custom viewport is used, we set it here
         // Otherwise, the renderer will use the default viewport
         if (UseCustomViewport)
+        {
+            context.Clear(output.View(), Color.Black);
             context.SetViewport(ref _targetViewport);
+        }
 
         // Source texture holds the final viewport's dimensions, NOT the low res
         // This also applies if UseCustomViewport is set to true
         context.SetRenderTarget(output.View());
         context.DrawFullscreenTriangle();
+
+        context.ClearDepth(MainRenderTask.Instance.Buffers.DepthBuffer.View());
 #if FLAX_EDITOR
         Profiler.EndEventGPU();
 #endif
