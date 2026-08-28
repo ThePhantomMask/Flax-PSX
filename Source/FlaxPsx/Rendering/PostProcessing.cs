@@ -170,6 +170,8 @@ public class PostProcessing : PostProcessEffect
         MainRenderTask.Instance.ActorsSource = ActorsSources.None;
         */
 
+        MainRenderTask.Instance.ActorsSource = ActorsSources.Scenes;
+
         _mainRenderTaskLayer = MainRenderTask.Instance.ViewLayersMask;
         MainRenderTask.Instance.ViewLayersMask = LayersMask.GetMask("UI");
         _sceneRenderTask.ViewLayersMask = MainCamera.RenderLayersMask & ~LayersMask.GetMask("UI");
