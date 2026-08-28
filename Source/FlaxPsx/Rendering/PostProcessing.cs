@@ -167,17 +167,25 @@ public class PostProcessing : PostProcessEffect
         // Plug into main scene rendering
         MainRenderTask.Instance.AddCustomPostFx(this);
 
-        /*
-        // Disable Scene Rendering on Main Task
-        MainRenderTask.Instance.ActorsSource = ActorsSources.None;
-        */
+        _mainRenderTaskLayer = MainRenderTask.Instance.ViewLayersMask;
+        Scripting.Update += ApplyLayerSplit;
+    }
+
+    /// <summary>
+    /// Re-applied every frame (see OnEnable) because Flax's RenderView.CopyFrom(camera)
+    /// resets View.RenderLayersMask from the Camera's own RenderLayersMask each frame,
+    /// which would otherwise undo a one-time assignment immediately.
+    /// </summary>
+    private void ApplyLayerSplit()
+    {
+        if (!(_sceneRenderTask || MainRenderTask.Instance))
+            return;
 
         MainRenderTask.Instance.ActorsSource = ActorsSources.Scenes;
-
-        _mainRenderTaskLayer = MainRenderTask.Instance.ViewLayersMask;
         MainRenderTask.Instance.ViewLayersMask = UILayer;
-        _sceneRenderTask.ViewLayersMask = MainCamera.RenderLayersMask & ~UILayer;
+        _sceneRenderTask.ViewLayersMask = _sceneRenderTask.Camera.RenderLayersMask & ~UILayer;
     }
+
 
     /// <summary>
     /// Gets internal render size based on parameters
@@ -232,6 +240,7 @@ public class PostProcessing : PostProcessEffect
 
         // Unregister Event
         ViewportSizeChanged -= OnViewportSizeChanged;
+        Scripting.Update -= ApplyLayerSplit;
     }
 
     private bool HandleChanges(PostProcessingHelpers helpers)
