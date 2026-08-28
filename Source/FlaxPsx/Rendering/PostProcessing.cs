@@ -74,6 +74,7 @@ public class PostProcessing : PostProcessEffect
     private Int2 _targetSize;
     private GPUTexture _gpuTexture;
     private ComposerData _composerData;
+    private LayersMask _mainRenderTaskLayer;
     private static SceneRenderTask _sceneRenderTask;
     private static GPUPipelineState _psComposer;
     private readonly PostProcessingHelpers _helpers = new();
@@ -169,6 +170,7 @@ public class PostProcessing : PostProcessEffect
         MainRenderTask.Instance.ActorsSource = ActorsSources.None;
         */
 
+        _mainRenderTaskLayer = MainRenderTask.Instance.ViewLayersMask;
         MainRenderTask.Instance.ViewLayersMask = LayersMask.GetMask("UI");
         _sceneRenderTask.ViewLayersMask = MainCamera.RenderLayersMask & ~LayersMask.GetMask("UI");
     }
@@ -208,7 +210,7 @@ public class PostProcessing : PostProcessEffect
         // Cleanup
         MainRenderTask.Instance.RemoveCustomPostFx(this);
         MainRenderTask.Instance.ActorsSource = ActorsSources.Scenes;
-        MainRenderTask.Instance.ViewLayersMask = LayersMask.Default;
+        MainRenderTask.Instance.ViewLayersMask = _mainRenderTaskLayer;
 
         if (_sceneRenderTask != null)
         {
