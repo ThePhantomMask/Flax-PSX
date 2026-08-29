@@ -391,9 +391,6 @@ public class PostProcessing : PostProcessEffect
         context.BindSR(0, _sceneRenderTask.Output);
         context.BindSR(1, _sceneRenderTask.Buffers.DepthBuffer.View());
 
-        Int2 intSize = new Int2((int)_targetViewport.Width, (int)_targetViewport.Height);
-        MainRenderTask.Instance.Resize(intSize.X, intSize.Y);
-
         context.SetState(_psComposer);
         // If custom viewport is used, we set it here
         // Otherwise, the renderer will use the default viewport
