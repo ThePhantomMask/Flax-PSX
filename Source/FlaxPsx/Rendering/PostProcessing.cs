@@ -166,10 +166,15 @@ public class PostProcessing : PostProcessEffect
         
         // Plug into main scene rendering
         MainRenderTask.Instance.AddCustomPostFx(this);
-
-        _mainRenderTaskLayer = MainRenderTask.Instance.ViewLayersMask;
+        
+        /*
+        // Disable Scene Rendering on Main Task
+        MainRenderTask.Instance.ActorsSource = ActorsSources.None;
+        */
 
         MainRenderTask.Instance.ActorsSource = ActorsSources.Scenes;
+
+        _mainRenderTaskLayer = MainRenderTask.Instance.ViewLayersMask;
         MainRenderTask.Instance.ViewLayersMask = UILayer;
         _sceneRenderTask.ViewLayersMask = _sceneRenderTask.Camera.RenderLayersMask & ~UILayer;
     }
