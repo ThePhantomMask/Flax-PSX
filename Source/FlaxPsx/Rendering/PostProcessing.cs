@@ -213,7 +213,10 @@ public class PostProcessing : PostProcessEffect
 
         if (_gpuTexture != null)
         {
-            _gpuTexture.ReleaseGPU();
+            if (_gpuTexture.IsAllocated)
+            {
+                _gpuTexture.ReleaseGPU();
+            }
             Destroy(_gpuTexture);
             _gpuTexture = null;
         }
@@ -304,6 +307,9 @@ public class PostProcessing : PostProcessEffect
         Profiler.BeginEventGPU("Custom Rendering");
 #endif
         
+        if (_sceneRenderTask == null || _sceneRenderTask?.Output == null || _sceneRenderTask.Output.Width == 0)
+            return;
+
         // Extra safety-check
         // if (!CanRender() || _sceneRenderTask.Buffers.DepthBuffer.Width == 0) 
         if (!CanRender()) 
