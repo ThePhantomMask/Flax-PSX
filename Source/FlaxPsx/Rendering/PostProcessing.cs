@@ -318,13 +318,10 @@ public class PostProcessing : PostProcessEffect
 #if FLAX_EDITOR
         Profiler.BeginEventGPU("Custom Rendering");
 #endif
-        
-        if (_sceneRenderTask == null || _sceneRenderTask?.Output == null || _sceneRenderTask.Output.Width == 0)
-            return;
 
         // Extra safety-check
         // if (!CanRender() || _sceneRenderTask.Buffers.DepthBuffer.Width == 0) 
-        if (!CanRender()) 
+        if (_sceneRenderTask == null || _sceneRenderTask?.Output == null || _sceneRenderTask.Output.Width == 0 || !CanRender())
             return;
         
         // If any of the main rendering options have changed, restart the script
