@@ -310,13 +310,7 @@ public class PostProcessing : PostProcessEffect
         // Extra safety-check
         // if (!CanRender() || _sceneRenderTask.Buffers.DepthBuffer.Width == 0) 
         if (_sceneRenderTask == null || _sceneRenderTask?.Output == null || _sceneRenderTask.Output.Width == 0 || !CanRender())
-        {
-            if (sourceTexture != null && output != null)
-            {
-                context.Draw(sourceTexture, output);
-            }
             return;
-        }
         
         // If any of the main rendering options have changed, restart the script
         HandleChanges(_helpers);
